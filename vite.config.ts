@@ -7,11 +7,11 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'prompt', // không tự tải lại trang: tránh mất chữ đang gõ
-      includeAssets: ['favicon.svg', 'icon-192.png', 'icon-512.png'],
+      includeAssets: ['favicon-64.png', 'icon-192.png', 'icon-512.png', 'brand-logo.jpg', 'brand-avatar.jpg'],
       manifest: {
         name: 'AI FactCheck Studio',
         short_name: 'FactCheck',
-        description: 'Phòng biên tập kiểm chứng thông tin trong dạy học AI, Tin học 12',
+        description: 'Phòng biên tập kiểm chứng thông tin trong dạy học AI, Tin học 12 – GV. Trần Thị Kim Thoa, THPT Hoàng Diệu',
         lang: 'vi',
         start_url: '/',
         scope: '/',
@@ -25,7 +25,7 @@ export default defineConfig({
         ],
       },
       workbox: {
-        globPatterns: ['**/*.{js,css,html,svg,png,woff2}'],
+        globPatterns: ['**/*.{js,css,html,svg,png,jpg,woff2}'],
         navigateFallback: '/index.html',
         cleanupOutdatedCaches: true,
       },

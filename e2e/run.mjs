@@ -3,10 +3,16 @@ import { spawn } from 'node:child_process';
 import { createRequire } from 'node:module';
 import fs from 'node:fs';
 import path from 'node:path';
+import { createHash } from 'node:crypto';
 
 const require = createRequire(import.meta.url);
 let pw;
-try { pw = require('playwright'); } catch { pw = require('/opt/npm-tools/node_modules/playwright'); }
+try { pw = require('playwright'); } catch {
+  try { pw = require('/opt/npm-tools/node_modules/playwright'); } catch {
+    const { execSync } = await import('node:child_process');
+    pw = require(path.join(execSync('npm root -g').toString().trim(), 'playwright'));
+  }
+}
 const { chromium } = pw;
 
 const PORT = Number(process.env.PORT || 4173);
@@ -30,8 +36,13 @@ async function startServer() {
 
 const browser = await (async () => { await startServer(); return chromium.launch({ headless: true }); })();
 const errors = [];
-const newCtx = async (opts = {}) => {
+// Phiên đăng nhập: tính từ giá trị băm trong src/auth.ts (mã nguồn không chứa mật khẩu dạng chữ).
+const authSrc = fs.readFileSync(new URL('../src/auth.ts', import.meta.url), 'utf8');
+const hashOf = (name) => authSrc.match(new RegExp(name + " = '([0-9a-f]{64})'"))[1];
+const AUTH_TOKEN = createHash('sha256').update('afs|session|' + hashOf('USER_HASH') + hashOf('PASS_HASH')).digest('hex');
+const newCtx = async (opts = {}, { login = true } = {}) => {
   const ctx = await browser.newContext({ viewport: { width: 1280, height: 800 }, acceptDownloads: true, locale: 'vi-VN', ...opts });
+  if (login) await ctx.addInitScript((t) => { try { sessionStorage.setItem('afs.v1.auth', t); } catch {} }, AUTH_TOKEN);
   return ctx;
 };
 const watch = (page, tag) => {
@@ -43,6 +54,40 @@ const gotoTab = async (page, name) => { await page.getByRole('tab', { name }).cl
 const wsKeys = (page) => page.evaluate(() => Object.keys(localStorage).filter((k) => k.startsWith('afs.v1.ws.')));
 
 try {
+  // ---- 0. Màn hình đăng nhập ----
+  {
+    const ctx = await newCtx({}, { login: false });
+    const page = await ctx.newPage();
+    watch(page, 'login');
+    await page.goto(BASE + '/#/cases');
+    await page.getByRole('heading', { name: 'Đăng nhập', level: 1 }).waitFor();
+    check('Chưa đăng nhập thì không vào được app', !(await page.getByRole('link', { name: 'Tình huống' }).count()));
+    check('Ô tên đăng nhập và mật khẩu để trống, không gợi ý tài khoản', (await page.getByLabel('Tên đăng nhập').inputValue()) === '' && (await page.getByLabel('Mật khẩu').inputValue()) === '');
+    check('Ô mật khẩu che ký tự', (await page.getByLabel('Mật khẩu').getAttribute('type')) === 'password');
+    const body = await page.locator('body').innerText();
+    check('Hiện thông tin GV, trường, địa chỉ', /Trần Thị Kim Thoa/.test(body) && /THPT Hoàng Diệu/.test(body) && /Mạc Đĩnh Chi/.test(body));
+    const imgs = await page.locator('img').evaluateAll((els) => els.map((e) => e.naturalWidth));
+    check('Logo và ảnh GV tải được', imgs.length >= 2 && imgs.every((w) => w > 0), imgs.join(','));
+    await page.getByLabel('Tên đăng nhập').fill('khach');
+    await page.getByLabel('Mật khẩu').fill('sai-mat-khau');
+    await page.getByRole('button', { name: 'Đăng nhập' }).click();
+    check('Sai thông tin thì báo lỗi', await page.getByText('Tên đăng nhập hoặc mật khẩu không đúng.').isVisible());
+    if (process.env.AFS_USER && process.env.AFS_PASS) {
+      await page.getByLabel('Tên đăng nhập').fill(process.env.AFS_USER);
+      await page.getByLabel('Mật khẩu').fill(process.env.AFS_PASS);
+      await page.getByRole('button', { name: 'Đăng nhập' }).click();
+      await page.getByRole('button', { name: 'Đăng xuất' }).waitFor();
+      check('Đúng tài khoản thì vào app', true);
+      await page.reload();
+      check('Ghi nhớ đăng nhập sau khi tải lại', await page.getByRole('button', { name: 'Đăng xuất' }).isVisible());
+      await page.getByRole('button', { name: 'Đăng xuất' }).click();
+      check('Đăng xuất quay về màn hình đăng nhập', await page.getByRole('heading', { name: 'Đăng nhập' }).isVisible());
+    } else {
+      console.log('SKIP  Đăng nhập đúng (đặt biến AFS_USER, AFS_PASS để chạy)');
+    }
+    await ctx.close();
+  }
+
   // ---- 1. Mở app: mốc dưới 2 giây trên mạng 4G + CPU chậm gấp 4 ----
   {
     const ctx = await newCtx();

@@ -4,6 +4,7 @@ import { Workspace } from './model';
 import { aiDeclarationText, compileSources, hasGrades, labelText, lessonText, supportsText } from './format';
 import { APPB_RUBRIC, MAIN_RUBRIC, sum } from './rubric';
 import { cleanXml, formatDateVN } from './text';
+import { TEACHER } from './teacher';
 
 const FONT = 'Times New Roman';
 const SZ = 26; // 13pt
@@ -121,9 +122,10 @@ export async function buildDocx(ws: Workspace): Promise<Blob> {
     if (ws.grading.note) kids.push(para(ws.grading.note));
   }
   kids.push(para('Công cụ chỉ ghi nhận tiến trình biên tập; không tự xác minh nguồn và không đánh giá đúng/sai.', { italics: true, size: 20 }));
+  kids.push(para(`GV. ${TEACHER.name} – ${TEACHER.school} – ${TEACHER.address}`, { italics: true, size: 20 }));
 
   const doc = new Document({
-    creator: 'AI FactCheck Studio',
+    creator: `AI FactCheck Studio – GV. ${TEACHER.name}`,
     title: cleanXml(`Phiếu kiểm chứng – ${ws.name || ws.case.title}`),
     sections: [
       {

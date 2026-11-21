@@ -17,7 +17,7 @@
   --bad-bg: #fde7e4;
   --radius: 10px;
   --font: 'Segoe UI', system-ui, -apple-system, Roboto, 'Helvetica Neue', Arial, sans-serif;
-  --serif: Georgia, Cambria, 'Times New Roman', serif;
+  --serif: Cambria, 'Noto Serif', 'Times New Roman', serif; /* Georgia thiếu chữ có dấu tiếng Việt (vd. "ồ") */
 }
 html { font-size: 18px; -webkit-text-size-adjust: 100%; }
 html[data-projector='1'] { font-size: 23px; }
@@ -56,7 +56,7 @@ a { color: var(--navy); }
 .top nav a { padding: 0.45rem 0.8rem; border-radius: 8px; min-height: 44px; display: inline-flex; align-items: center; }
 .top nav a[aria-current='page'] { background: rgba(255, 255, 255, 0.16); font-weight: 600; }
 .top nav a:hover { background: rgba(255, 255, 255, 0.1); }
-.modes { margin-left: auto; display: flex; gap: 1rem; flex-wrap: wrap; font-size: 0.85rem; }
+.modes { margin-left: auto; display: flex; align-items: center; gap: 0.6rem 1rem; flex-wrap: wrap; font-size: 0.85rem; }
 .foot { max-width: 1060px; margin: 0 auto; padding: 1rem; color: var(--ink-soft); font-size: 0.82rem; border-top: 1px solid var(--line); }
 
 /* Khối */
@@ -93,7 +93,7 @@ a { color: var(--navy); }
 .field { margin: 0.6rem 0; }
 .field label, legend { display: block; font-weight: 600; font-size: 0.92rem; margin-bottom: 0.2rem; }
 .hint { color: var(--ink-soft); font-size: 0.82rem; margin-bottom: 0.25rem; }
-input[type='text'], input[type='date'], select, textarea, input:not([type]) {
+input[type='text'], input[type='password'], input[type='date'], select, textarea, input:not([type]) {
   font: inherit; width: 100%; padding: 0.5rem 0.65rem; border: 1.5px solid #b9ad92; border-radius: 8px;
   background: #fff; color: var(--ink); min-height: 44px;
 }
@@ -208,3 +208,30 @@ mark { background: #ffe0dc; color: #7a1410; padding: 0 0.15em; border-radius: 3p
 }
 
 @media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; transition: none !important; animation: none !important; } }
+
+/* Đăng nhập + thông tin giáo viên */
+.login-wrap { min-height: 100vh; max-width: none; display: flex; align-items: center; justify-content: center; padding: 1.5rem 1rem; background: linear-gradient(135deg, #e9eef6 0%, var(--paper) 60%); }
+.login-card { display: grid; grid-template-columns: 1fr 1fr; width: 100%; max-width: 880px; background: var(--card); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; box-shadow: 0 12px 36px rgba(20, 42, 70, 0.14); }
+.login-side { background: var(--navy-d); color: #fff; padding: 2rem 1.75rem; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 0.4rem; }
+.login-logo { width: 150px; height: 150px; border-radius: 50%; background: #fff; object-fit: cover; border: 4px solid rgba(255, 255, 255, 0.85); }
+.login-app { font-family: var(--serif); font-size: 1.45rem; font-weight: 700; margin-top: 0.6rem; }
+.login-sub { font-size: 0.85rem; opacity: 0.85; max-width: 22rem; }
+.login-teacher { margin-top: auto; padding-top: 1.2rem; display: flex; gap: 0.8rem; align-items: center; text-align: left; border-top: 1px solid rgba(255, 255, 255, 0.2); width: 100%; }
+.login-teacher img { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 2px solid #fff; flex: none; }
+.login-teacher div { display: flex; flex-direction: column; font-size: 0.8rem; line-height: 1.4; }
+.login-teacher strong { font-size: 0.95rem; }
+.login-form { padding: 2rem 1.75rem; display: flex; flex-direction: column; justify-content: center; }
+.login-form .field { display: block; }
+.login-form .field > span { display: block; font-weight: 600; font-size: 0.92rem; margin-bottom: 0.2rem; }
+.login-form input[type='text'], .login-form input[type='password'] { width: 100%; }
+.login-error { min-height: 1.5rem; color: var(--pencil); font-weight: 600; font-size: 0.9rem; }
+.login-btn { width: 100%; justify-content: center; margin: 0.2rem 0 0.6rem; }
+@media (max-width: 720px) { .login-card { grid-template-columns: 1fr; } .login-side { padding: 1.5rem 1rem; } .login-logo { width: 110px; height: 110px; } }
+
+.brand { display: inline-flex; align-items: center; gap: 0.5rem; }
+.brand-logo { width: 34px; height: 34px; border-radius: 50%; background: #fff; object-fit: cover; }
+.who { display: inline-flex; align-items: center; gap: 0.45rem; font-size: 0.85rem; }
+.who img { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 1.5px solid #fff; }
+.top .btn.logout { color: #fff; border-color: rgba(255, 255, 255, 0.7); background: transparent; }
+.top .btn.logout:hover { background: rgba(255, 255, 255, 0.12); }
+.foot-teacher { margin-bottom: 0.4rem; color: var(--ink); }

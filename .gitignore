@@ -1,0 +1,8 @@
+dist
+node_modules
+e2e/out
+*.log
+.vercel
+
+# Yêu cầu gốc của GV (có mật khẩu) – không đưa lên mạng
+_yeu-cau/THÔNG TIN GV.txt

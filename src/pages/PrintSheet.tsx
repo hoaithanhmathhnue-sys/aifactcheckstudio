@@ -3,6 +3,7 @@ import { aiDeclarationText, compileSources, hasGrades, labelText, lessonText, su
 import { formatDateTime } from '../text';
 import { APPB_RUBRIC, MAIN_RUBRIC, sum } from '../rubric';
 import { OriginBadge } from '../components/ui';
+import { TEACHER } from '../teacher';
 
 /** Bản in của một hồ sơ: chỉ dựng khi bấm "In phiếu". */
 export default function PrintSheet({ ws }: { ws: Workspace }) {
@@ -143,7 +144,9 @@ export default function PrintSheet({ ws }: { ws: Workspace }) {
           {ws.grading.note && <p className="print-pre">{ws.grading.note}</p>}
         </>
       )}
-      <p className="print-foot">Công cụ chỉ ghi nhận tiến trình biên tập; không tự xác minh nguồn và không đánh giá đúng/sai.</p>
+      <p className="print-foot">
+        Công cụ chỉ ghi nhận tiến trình biên tập; không tự xác minh nguồn và không đánh giá đúng/sai. GV. {TEACHER.name} – {TEACHER.school}.
+      </p>
     </article>
   );
 }

@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { registerSW } from 'virtual:pwa-register';
 import { useApp } from './ctx';
 import { useRoute } from './router';
@@ -8,10 +8,19 @@ import Cases from './pages/Cases';
 import CaseEditor from './pages/CaseEditor';
 import WorkspacePage from './pages/Workspace';
 import PrintDocs, { CaseHandout } from './pages/PrintDocs';
+import Login from './pages/Login';
+import { isLoggedIn, logout } from './auth';
+import { TEACHER } from './teacher';
 
 const TAB_IDS: TabId[] = ['draft', 'verify', 'apps', 'review', 'publish', 'grade'];
 
 export default function App() {
+  const [authed, setAuthed] = useState(isLoggedIn);
+  if (!authed) return <Login onSuccess={() => setAuthed(true)} />;
+  return <Studio onLogout={() => { logout(); setAuthed(false); }} />;
+}
+
+function Studio({ onLogout }: { onLogout: () => void }) {
   const { parts, query } = useRoute();
   const { prefs, setPrefs, needRefresh, applyUpdate, registerUpdate, toast } = useApp();
   const [a, b, c] = parts;
@@ -55,7 +64,7 @@ export default function App() {
       </a>
       <header className="top no-print">
         <a className="brand" href="#/">
-          <span className="brand-mark" aria-hidden="true">✎</span> AI FactCheck Studio
+          <img className="brand-logo" src={TEACHER.logo} alt="" width={34} height={34} /> AI FactCheck Studio
         </a>
         <nav aria-label="Chính">
           <a href="#/" aria-current={!a ? 'page' : undefined}>Hồ sơ nhóm</a>
@@ -71,6 +80,13 @@ export default function App() {
             <input type="checkbox" checked={prefs.projector} onChange={(e) => setPrefs({ projector: e.target.checked })} />
             <span>Chữ lớn (chiếu)</span>
           </label>
+          <span className="who" title={`${TEACHER.school}`}>
+            <img src={TEACHER.avatar} alt="" width={32} height={32} />
+            GV. {TEACHER.name}
+          </span>
+          <button className="btn small logout" type="button" onClick={onLogout}>
+            Đăng xuất
+          </button>
         </div>
       </header>
       {needRefresh && (
@@ -85,6 +101,9 @@ export default function App() {
         {page}
       </main>
       <footer className="foot no-print">
+        <p className="foot-teacher">
+          <strong>GV. {TEACHER.name}</strong> – {TEACHER.school} – {TEACHER.address}
+        </p>
         Công cụ ghi nhận tiến trình biên tập: không tự tìm nguồn, không xác minh sự thật, không gọi AI và không chấm đúng/sai. Tình huống có sẵn là giả định do giáo viên biên soạn.
       </footer>
     </>
