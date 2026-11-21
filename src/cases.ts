@@ -114,3 +114,13 @@ export function newCustomCase(from?: Case): Case {
     : { id: '', title: '', lesson: 'both', origin: 'assumed', realTool: '', realChecked: false, text: '', sources: [], seeds: [], teacherNotes: '', builtIn: false };
   return { ...base, id: '', builtIn: false, title: from ? `${from.title} (bản sao)` : '' };
 }
+
+/** Đề khảo sát cá nhân (Phụ lục 2 của biện pháp): Đề trước / Đề sau và các bản sao của chúng. */
+export const isSurvey = (c: Pick<Case, 'id' | 'title'>): boolean => c.id.startsWith('built-in-de-') || /đề khảo sát/i.test(c.title);
+
+export const SURVEY_TASKS = [
+  'Tách tối thiểu hai nhận định có thể kiểm tra.',
+  'Chọn một nhận định và kiểm tra theo bộ nguồn giáo viên phát.',
+  'Ghi nhãn (được nguồn hỗ trợ / cần sửa / chưa đủ bằng chứng), lí do và cách viết lại.',
+  'Nêu một lưu ý bảo vệ thông tin cá nhân khi dùng công cụ AI.',
+];

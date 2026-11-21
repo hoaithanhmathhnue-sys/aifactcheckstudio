@@ -10,7 +10,8 @@ App là công cụ **ghi nhận tiến trình biên tập**: không tự tìm ng
 
 Chọn tình huống → tách nhận định → ghi nguồn, bằng chứng → chọn nhãn (được nguồn hỗ trợ / cần sửa / chưa đủ bằng chứng) → phản biện → công bố → in, xuất Word (.docx) hoặc tải sao lưu (.json).
 
-- Giáo viên: thư viện tình huống (3 tình huống có sẵn lấy từ biện pháp, có thể sao chép và sửa), bản phát in, Phiếu A/B trắng, rubric 10 điểm, chế độ giáo viên (gợi ý xử lí, chấm điểm).
+- Giáo viên: thư viện tình huống (3 tình huống có sẵn lấy từ biện pháp, có thể sao chép và sửa), bản phát in (Đề trước/Đề sau có ô mã ẩn danh và 4 yêu cầu), chế độ giáo viên (gợi ý xử lí, chấm điểm).
+- Tài liệu in (chọn in từng tài liệu): Phiếu A, Phiếu B, rubric 10 điểm + rubric Phiếu B, phiếu cá nhân cuối Tiết 1 và Tiết 2, bảng tổng hợp trước – sau theo mã ẩn danh (khớp Bảng 1 của biện pháp).
 - Học sinh: làm theo nhóm trên một máy; mã ẩn danh thay họ tên.
 - Chạy offline sau lần mở đầu (PWA). Màn hình hẹp và chế độ chữ lớn để chiếu.
 

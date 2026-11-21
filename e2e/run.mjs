@@ -270,6 +270,17 @@ try {
     await page.getByRole('link', { name: 'Tài liệu in' }).click();
     await page.getByRole('heading', { name: /Phiếu A/ }).waitFor();
     check('Tài liệu in có Phiếu A, Phiếu B, Rubric', (await page.getByRole('heading', { name: /Phiếu A|Phiếu B|Rubric chấm/ }).count()) >= 3);
+    check('Tài liệu in có phiếu cá nhân cuối Tiết 1, Tiết 2 và bảng tổng hợp trước – sau', (await page.getByRole('heading', { name: /Phiếu cá nhân cuối Tiết|Bảng tổng hợp kết quả trước/ }).count()) === 3);
+    await page.getByRole('button', { name: 'Bỏ chọn' }).click();
+    check('Bỏ chọn hết thì nút In bị khóa', await page.getByRole('button', { name: /^In / }).isDisabled());
+    await page.getByLabel(/Phiếu cá nhân cuối Tiết 1/).check();
+    await page.emulateMedia({ media: 'print' });
+    const shown = await page.locator('article.sheet').evaluateAll((els) => els.filter((e) => getComputedStyle(e).display !== 'none').map((e) => e.querySelector('h1').textContent));
+    await page.emulateMedia({ media: 'screen' });
+    check('Chỉ in tài liệu đã chọn', shown.length === 1 && /Tiết 1/.test(shown[0]), shown.join(' | '));
+    await page.goto(BASE + '/#/cases/print/built-in-de-truoc');
+    await page.getByRole('heading', { name: 'Khảo sát cá nhân' }).waitFor();
+    check('Đề trước in có mã ẩn danh và 4 yêu cầu của Phụ lục 2', (await page.getByText(/Mã ẩn danh/).count()) > 0 && (await page.getByText(/Tách tối thiểu hai nhận định/).count()) > 0);
   }
 
   // ---- 8. Màn hình hẹp 360px: không tràn ngang ở mọi tab ----

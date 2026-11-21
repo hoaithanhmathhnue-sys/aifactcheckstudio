@@ -235,3 +235,9 @@ mark { background: #ffe0dc; color: #7a1410; padding: 0 0.15em; border-radius: 3p
 .top .btn.logout { color: #fff; border-color: rgba(255, 255, 255, 0.7); background: transparent; }
 .top .btn.logout:hover { background: rgba(255, 255, 255, 0.12); }
 .foot-teacher { margin-bottom: 0.4rem; color: var(--ink); }
+
+/* Tài liệu in: chọn tài liệu, bảng tổng hợp */
+.pick-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr)); gap: 0 1rem; }
+.sheet.skipped { opacity: 0.45; }
+.sheet table.tally td { height: 1.7rem; }
+.sheet table.tally th { font-size: 0.78rem; text-align: center; }
